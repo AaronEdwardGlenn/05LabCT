@@ -2,10 +2,10 @@
   "name": "05labct",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest --verbose",
-    "test:watch": "npm run test -- --watchAll --coverage"
+    "tw": "npm run test -- --watchAll --coverage"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/AaronEdwardGlenn/05LabCT#readme",
   "dependencies": {
     "jest": "^24.9.0",
-    "mongoose": "^5.8.0"
+    "mongoose": "^5.8.0",
+    "nodemon": "^2.0.1"
   }
 }
