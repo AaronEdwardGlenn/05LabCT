@@ -1,6 +1,5 @@
-require('dotevn').config(); 
-// process.env.MONGODB_URI now exists
-require('/lib/utils/connect')(); 
+require('dotenv').config() 
+require('./lib/utils/connect')(); 
 const app = require('./lib/app.js'); 
 
 app.listen(7890, () => {

@@ -1,5 +1,5 @@
 require('dotenv').config(); 
-const connect = require('../lib/utils/connect');
+require('../lib/utils/connect')();
 const mongoose = require('mongoose'); 
 const request = require('supertest'); 
 const app = require('../lib/app'); 
@@ -7,21 +7,18 @@ const app = require('../lib/app');
 const Bear = require('../lib/models/bears'); 
 
 describe('app routties', () => {
-        beforeAll(() => {
-            connect(); 
-        });
 
-        beforeEach(() => {
-            return mongoose.connection.dropDatabase(); 
-        }); 
+    beforeEach(() => {
+        return mongoose.connection.dropDatabase(); 
+    }); 
 
-        afterAll(() => {
-            return mongoose.connection.close(); 
-        });
+    afterAll(() => {
+        return mongoose.connection.close(); 
+    });
 
     it('creates my bear on POST', () => {
         return request(app)
-        .post('./bears')
+        .post('/bears')
         .send({Species: 'Black', Habitat: 'Forest'})
         .then(res => {
             expect(res.body).toEqual({
@@ -34,12 +31,13 @@ describe('app routties', () => {
     });
 
     it('gets the bears on GET', async() => {
-    const bear = await Bear.create({
-    Species: 'Grizzly', 
-    Habitat: 'Glacier NP'
-    }); 
+    const bears = await Bear.create([
+    { Species: 'Grizzly', Habitat: 'Glacier NP'},
+    { Species: 'Green', Habitat: 'Snow NP'},
+    { Species: 'Yellow', Habitat: 'Ice NP'}
+    ]); 
     return request(app)
-   .get('./bears')
+   .get('/bears')
    .then(res => {
        bears.forEach(bear => {
            expect(res.body).toContainEqual({
@@ -56,17 +54,17 @@ describe('app routties', () => {
   it('gets a bear by ID on GET', async() => {
     const bear = await Bear.create({
         Species: 'Brown',
-        Habitat: ('Yosemite')
+        Habitat: 'Yosemite'
     });
-
+    console.log(bear);
+    
     return request(app)
     .get(`/bears/${bear._id}`)
     .then(res => {
-        expect(res.body)
-        .toEqual({
+        expect(res.body).toEqual({
             _id: bear._id.toString(),
-            title: bear.title,
-            body: bear.body,
+            Species: bear.Species,
+            Habitat: bear.Habitat,
             __v: bear.__v
         });
     });
@@ -75,18 +73,17 @@ describe('app routties', () => {
   it('updates a bear with PATCH', async() => {
     const bear = await Bear.create({
         Species: 'Panda',
-        Habitat: ('Bamboo Forest')
+        Habitat: 'Bamboo Forest'
     }); 
 
     return request(app)
     .patch(`/bears/${bear._id}`)
-    .send({
-        Species: 'Panderrrrr'})
+    .send({ Species: 'Panderrrrr' })
         .then(res => {
             expect(res.body).toEqual({
                 _id: bear._id.toString(),
                 Species: 'Panderrrrr',
-                Habitat: ('Bamboo Forest'),
+                Habitat: 'Bamboo Forest',
                 __v: bear.__v 
             });
         });
@@ -105,8 +102,8 @@ describe('app routties', () => {
         .toEqual({
             _id: bear._id.toString(),
             Species: 'Koala', 
-          body: 'really good!',
-          Habitat: 'Eucyliptus Forest'
+          Habitat: 'Eucyliptus Forest',
+          __v: 0
         })
     });
     });
