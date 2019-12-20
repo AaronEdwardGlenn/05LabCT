@@ -1,4 +1,5 @@
-require('dotenv').config() 
+/* eslint-disable no-console */
+require('dotenv').config(); 
 require('./lib/utils/connect')(); 
 const app = require('./lib/app.js'); 
 
